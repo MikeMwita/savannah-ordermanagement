@@ -1,1 +1,59 @@
-package repository
+package db
+
+import (
+	"database/sql"
+	"fmt"
+	"os"
+)
+
+var DB *sql.DB
+
+func InitDB() {
+	var err error
+
+	dbConnectionString := os.Getenv("DB_CONNECTION_STRING")
+	dbPassword := os.Getenv("DB_PASSWORD")
+
+	dbConnectionString = fmt.Sprintf(dbConnectionString, dbPassword)
+
+	DB, err = sql.Open("postgres", dbConnectionString)
+	if err != nil {
+		panic(fmt.Sprintf("failed to connect to the database: %v", err))
+	}
+
+	DB.SetMaxOpenConns(10)
+	DB.SetMaxIdleConns(4)
+
+	CreateTables()
+}
+
+func CreateTables() {
+	createCustomersTable := `
+	CREATE TABLE IF NOT EXISTS customers (
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(50) NOT NULL,
+		code VARCHAR(10) UNIQUE NOT NULL,
+		phone VARCHAR(15) NOT NULL
+	)
+	`
+
+	_, err := DB.Exec(createCustomersTable)
+	if err != nil {
+		panic("Could not create customers table.")
+	}
+
+	createOrdersTable := `
+	CREATE TABLE IF NOT EXISTS orders (
+		id SERIAL PRIMARY KEY,
+		customer_id INTEGER REFERENCES customers(id) ON DELETE CASCADE,
+		item VARCHAR(50) NOT NULL,
+		amount DECIMAL(10, 2) NOT NULL,
+		time TIMESTAMP NOT NULL
+	)
+	`
+
+	_, err = DB.Exec(createOrdersTable)
+	if err != nil {
+		panic("Could not create orders table.")
+	}
+}
