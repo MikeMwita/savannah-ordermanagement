@@ -22,7 +22,7 @@ type Authenticator struct {
 	ctx          context.Context
 }
 
-func newAuthenticator() (*Authenticator, error) {
+func NewAuthenticator() (*Authenticator, error) {
 	ctx := context.Background()
 	provider, err := oidc.NewProvider(ctx, "https://accounts.google.com")
 	if err != nil {
@@ -93,19 +93,4 @@ func (a *Authenticator) handleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(data)
-}
-
-func main() {
-	auther, err := newAuthenticator()
-	if err != nil {
-		log.Fatalf("failed to get authenticator: %v", err)
-	}
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, auther.clientConfig.AuthCodeURL("state"), http.StatusFound)
-	})
-
-	mux.HandleFunc("/auth/google/callback", auther.handleCallback)
-
-	log.Fatal(http.ListenAndServe("127.0.0.1:5556", mux))
 }

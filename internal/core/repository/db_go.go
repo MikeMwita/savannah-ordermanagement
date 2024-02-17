@@ -1,9 +1,10 @@
-package db
+package repository
 
 import (
 	"database/sql"
 	"fmt"
-	"os"
+
+	_ "github.com/lib/pq"
 )
 
 var DB *sql.DB
@@ -11,19 +12,20 @@ var DB *sql.DB
 func InitDB() {
 	var err error
 
-	dbConnectionString := os.Getenv("DB_CONNECTION_STRING")
-	dbPassword := os.Getenv("DB_PASSWORD")
+	password := "1A5hhh3qsjQQdUA6IajljFTXoDQKEcwo" // hardcoded for testing purpose only
 
-	dbConnectionString = fmt.Sprintf(dbConnectionString, dbPassword)
+	dbConnectionString := fmt.Sprintf("host=dpg-clk5aoeg1b2c739gus30-a.oregon-postgres.render.com port=5432 user=mike dbname=mike_dy9f password=%s sslmode=require", password)
 
 	DB, err = sql.Open("postgres", dbConnectionString)
 	if err != nil {
 		panic(fmt.Sprintf("failed to connect to the database: %v", err))
 	}
 
+	// Set the connection pool limits
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(4)
 
+	// Ensure tables are created
 	CreateTables()
 }
 
@@ -51,7 +53,6 @@ func CreateTables() {
 		time TIMESTAMP NOT NULL
 	)
 	`
-
 	_, err = DB.Exec(createOrdersTable)
 	if err != nil {
 		panic("Could not create orders table.")
