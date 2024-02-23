@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/MikeMwita/savannah-ordermanagement/config"
 	"github.com/MikeMwita/savannah-ordermanagement/internal/core/repository"
 	"github.com/MikeMwita/savannah-ordermanagement/internal/routes"
 	"log"
@@ -10,10 +9,10 @@ import (
 
 func main() {
 
-	_, err := config.LoadConfig()
-	if err != nil {
-		log.Fatal("Loading config failed", err)
-	}
+	//_, err := config.LoadConfig()
+	//if err != nil {
+	//	log.Fatal("Loading config failed", err)
+	//}
 
 	// Initialize the database
 	repository.InitDB()
