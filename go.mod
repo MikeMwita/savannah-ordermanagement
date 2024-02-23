@@ -1,6 +1,6 @@
 module github.com/MikeMwita/savannah-ordermanagement
 
-go 1.22
+go 1.21.7
 
 require (
 	github.com/MikeMwita/africastalking-go v0.0.0-20240216101212-ac3dd510a56e
