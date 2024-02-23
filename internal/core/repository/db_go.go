@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -12,10 +13,9 @@ var DB *sql.DB
 func InitDB() {
 	var err error
 
-	password := "1A5hhh3qsjQQdUA6IajljFTXoDQKEcwo" // hardcoded for testing purpose only
+	password := os.Getenv("DB_PASSWORD")
 
 	dbConnectionString := fmt.Sprintf("host=dpg-clk5aoeg1b2c739gus30-a.oregon-postgres.render.com port=5432 user=mike dbname=mike_dy9f password=%s sslmode=require", password)
-
 	DB, err = sql.Open("postgres", dbConnectionString)
 	if err != nil {
 		panic(fmt.Sprintf("failed to connect to the database: %v", err))

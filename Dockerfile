@@ -1,30 +1,20 @@
-# Stage 1: Build Environment
-FROM golang:1.17-alpine as build-env
+FROM golang:alpine as builder
 
-# Set environment variables
-ENV APP_NAME savannah
-ENV CMD_PATH cmd/api/
+WORKDIR /app
 
-# Set the working directory
-WORKDIR /go/src/$APP_NAME
+COPY go.mod go.sum ./
 
-# Copy the source code into the container's workspace
+RUN go mod download
+
 COPY . .
 
-# Build the Go application
-RUN CGO_ENABLED=0 go build -v -o /go/bin/$APP_NAME $CMD_PATH
+RUN go build -o main .
 
 # Stage 2: Final Image
-FROM alpine:3.14
+FROM scratch
 
-# Install Go
-RUN apk add --no-cache go
+COPY --from=builder /app/main /app/main
 
-# Copy the built binary from the previous stage
-COPY --from=build-env /go/bin/gophercon-backend /go/bin/savannah
+EXPOSE 5556
 
-# Set environment variables
-ENV GO111MODULE=on
-
-# Set the entry point
-CMD ["/go/bin/gophercon-backend"]
+CMD ["/app/main"]
