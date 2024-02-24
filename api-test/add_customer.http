@@ -2,7 +2,7 @@ POST http://localhost:5556/signup
 content-type: application/json
 
 {
-  "name": "Mike Mwita",
-  "code": "JED4E",
+  "name": "Mike Mwitaa",
+  "code": "JEfRE",
   "phone": "+254745617596"
 }

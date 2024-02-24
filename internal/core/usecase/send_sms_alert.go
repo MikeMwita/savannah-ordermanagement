@@ -5,6 +5,7 @@ import (
 	"github.com/MikeMwita/africastalking-go/pkg/sms"
 	"github.com/MikeMwita/savannah-ordermanagement/internal/core/models"
 	"github.com/MikeMwita/savannah-ordermanagement/internal/core/repository"
+	"github.com/MikeMwita/savannah-ordermanagement/pkg"
 	"os"
 )
 
@@ -16,7 +17,7 @@ func SendSmsAlert(order models.Order) error {
 		Sender:  os.Getenv("AFRICASTALKING_SENDER"),
 	}
 
-	customerRepo := repository.NewCustomerRepo(repository.DB)
+	customerRepo := repository.NewCustomerRepo(pkg.DB)
 	customer, err := customerRepo.GetCustomerByID(order.CustomerID)
 	if err != nil {
 		return err
