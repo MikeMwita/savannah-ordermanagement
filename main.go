@@ -37,7 +37,6 @@ func main() {
 	// Register authentication and protected routes
 	routes.RegisterRoutes(mux, orderRepo, customerRepo)
 
-	// Start the server
 	port := ":5556"
 	log.Printf("Server is running on port %s...\n", port)
 	if err := http.ListenAndServe(port, mux); err != nil {
