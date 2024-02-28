@@ -38,7 +38,7 @@ func main() {
 	routes.RegisterRoutes(mux, orderRepo, customerRepo)
 
 	// Start the server
-	port := ":5556"
+	port := ":10000"
 	log.Printf("Server is running on port %s...\n", port)
 	if err := http.ListenAndServe(port, mux); err != nil {
 		log.Fatalf("Failed to start server: %v\n", err)
