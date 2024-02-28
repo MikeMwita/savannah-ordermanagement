@@ -5,6 +5,7 @@ go 1.21.7
 require (
 	github.com/MikeMwita/africastalking-go v0.0.0-20240216101212-ac3dd510a56e
 	github.com/coreos/go-oidc/v3 v3.9.0
+	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
@@ -87,4 +88,3 @@ require (
 )
 
 //replace github.com/MikeMwita/africastalking-go => /home/mike/Desktop/community/at
-
