@@ -4,57 +4,33 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
+	"os"
 )
 
 var DB *sql.DB
 
-func InitDB(host, port, user, password, dbname, sslmode string) {
+func InitDB() {
 	var err error
 
-	// Use the provided parameters to form the connection string
-	dbConnectionString := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s", host, port, user, dbname, password, sslmode)
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
 
-	// Open the database connection
+	// Construct the connection string manually
+	dbConnectionString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", dbUser, dbPassword, dbHost, dbPort, dbName)
+
 	DB, err = sql.Open("postgres", dbConnectionString)
 	if err != nil {
 		panic(fmt.Sprintf("failed to connect to the database: %v", err))
 	}
 
-	// Set the connection pool limits
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(4)
 
-	// Ensure tables are created
 	CreateTables()
 }
-
-//
-//func InitDB() error {
-//	host := os.Getenv("DB_HOST")
-//	port := os.Getenv("DB_PORT")
-//	user := os.Getenv("DB_USER")
-//	dbname := os.Getenv("DB_NAME")
-//	password := os.Getenv("DB_PASSWORD")
-//
-//	dbConnectionString := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", host, port, user, dbname, password)
-//	var err error
-//	DB, err = sql.Open("postgres", dbConnectionString)
-//	if err != nil {
-//		return fmt.Errorf("failed to connect to the database: %v", err)
-//	}
-//
-//	// Set the connection pool limits
-//	DB.SetMaxOpenConns(10)
-//	DB.SetMaxIdleConns(4)
-//
-//	// Ensure tables are created
-//	if err := CreateTables(); err != nil {
-//		return err
-//	}
-//
-//	return nil
-//}
-
 func CreateTables() error {
 	createCustomersTable := `
 	CREATE TABLE IF NOT EXISTS customers (

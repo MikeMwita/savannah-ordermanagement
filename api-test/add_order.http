@@ -2,9 +2,9 @@ POST http://localhost:5556/order
 content-type: application/json
 
 {
-  "customer_id": 6,
-  "item": "foodi",
-  "amount": 1000.00,
+  "customer_id": 1,
+  "item": "samosa",
+  "amount": 120.00,
   "time": "2021-07-01T12:00:00"
 }
 
