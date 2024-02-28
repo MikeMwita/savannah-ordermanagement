@@ -1,8 +1,8 @@
 postgres:
   PostgresqlHost: localhost
   PostgresqlPort: 5432
-  PostgresqlUser:
-  PostgresqlPassword:
+  PostgresqlUser: mikedev
+  PostgresqlPassword: bFI46nC9yE3zxGdi7wYVxyZj3umQqz1S
   PostgresqlDbname: postgres
   PostgresqlSslmode: require
   PgDriver: pg
