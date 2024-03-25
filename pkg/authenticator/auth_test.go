@@ -2,6 +2,7 @@ package authenticator
 
 import (
 	"context"
+	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
 	"reflect"
 	"testing"
@@ -22,9 +23,7 @@ func TestAuthenticator_VerifyIDToken(t *testing.T) {
 		args    args
 		want    *oidc.IDToken
 		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
+	}{}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			a := &Authenticator{
@@ -48,9 +47,7 @@ func TestNew(t *testing.T) {
 		name    string
 		want    *Authenticator
 		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
+	}{}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := New()
