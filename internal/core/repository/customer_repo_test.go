@@ -3,6 +3,7 @@ package repository_test
 import (
 	"context"
 	"database/sql"
+	_ "github.com/lib/pq"
 	"path/filepath"
 	"testing"
 	"time"
