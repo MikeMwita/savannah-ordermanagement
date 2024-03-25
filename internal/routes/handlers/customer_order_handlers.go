@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/MikeMwita/savannah-ordermanagement/internal/core/adapters"
 	"github.com/MikeMwita/savannah-ordermanagement/internal/core/models"
 	Usecase "github.com/MikeMwita/savannah-ordermanagement/internal/core/usecase"
+	"go.opentelemetry.io/otel"
 	"log"
 	"net/http"
 	"time"
@@ -16,6 +18,8 @@ type Handler struct {
 }
 
 func (h *Handler) AddCustomerHandler(w http.ResponseWriter, r *http.Request) {
+	_, span := otel.Tracer("customer-service").Start(r.Context(), "AddCustomerHandler")
+	defer span.End()
 	if r.Method != http.MethodPost {
 		writeErrorResponse(w, http.StatusMethodNotAllowed, "method_not_allowed", "Method not allowed", "")
 		return
@@ -26,6 +30,7 @@ func (h *Handler) AddCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&customer)
 	if err != nil {
 		writeErrorResponse(w, http.StatusBadRequest, "bad_request", "Failed to parse request body", err.Error())
+		span.RecordError(err)
 		return
 	}
 
@@ -33,6 +38,7 @@ func (h *Handler) AddCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	err = h.customerRepo.AddCustomer(customer)
 	if err != nil {
 		writeErrorResponse(w, http.StatusInternalServerError, "internal_error", "Failed to add customer to the database", err.Error())
+		span.RecordError(err)
 		return
 	}
 
@@ -43,8 +49,13 @@ func (h *Handler) AddCustomerHandler(w http.ResponseWriter, r *http.Request) {
 // AddOrderHandler handles adds an order to the database
 
 func (h *Handler) AddOrderHandler(w http.ResponseWriter, r *http.Request) {
+	_, span := otel.Tracer("order-service").Start(r.Context(), "AddOrderHandler")
+	defer span.End()
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+
+		span.RecordError(errors.New("Method not allowed"))
+
 		return
 	}
 
@@ -52,10 +63,11 @@ func (h *Handler) AddOrderHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&order)
 	if err != nil {
 		http.Error(w, "Failed to parse request body", http.StatusBadRequest)
+		span.RecordError(err)
+
 		return
 	}
 
-	// Set the order time to the current time if it's not provided
 	if order.Time == "" {
 		order.Time = time.Now().UTC().Format(time.RFC3339)
 	}
@@ -71,6 +83,7 @@ func (h *Handler) AddOrderHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to send SMS alert:", err)
 		http.Error(w, "Failed to send SMS alert", http.StatusInternalServerError)
+		span.RecordError(err)
 		return
 	}
 
@@ -84,6 +97,8 @@ func (h *Handler) AddOrderHandler(w http.ResponseWriter, r *http.Request) {
 	responseJSON, err := json.Marshal(response)
 	if err != nil {
 		http.Error(w, "Failed to marshal response", http.StatusInternalServerError)
+		span.RecordError(err)
+
 		return
 	}
 
