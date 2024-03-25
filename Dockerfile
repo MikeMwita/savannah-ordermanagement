@@ -18,3 +18,5 @@ COPY --from=builder /app/main /app/main
 EXPOSE 5556
 
 CMD ["/app/main"]
+
+
