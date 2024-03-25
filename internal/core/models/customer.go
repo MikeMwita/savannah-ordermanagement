@@ -6,5 +6,5 @@ type Customer struct {
 	Code        string `json:"code"`
 	Phone       string `json:"phone"`
 	Email       string `json:"email"`
-	PhoneNumber string
+	PhoneNumber string `json:"phone_number"`
 }
