@@ -17,7 +17,6 @@ import (
 func TestOrderRepository_CreateOrderAndGetCustomerByID(t *testing.T) {
 	ctx := context.Background()
 
-	// Start PostgreSQL container
 	pgContainer, err := postgres.RunContainer(ctx,
 		testcontainers.WithImage("postgres:15.3-alpine"),
 		postgres.WithInitScripts(filepath.Join("../../../testdata", "init-db.sql")),
