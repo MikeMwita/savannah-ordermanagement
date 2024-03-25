@@ -18,7 +18,6 @@ func InitDB() {
 	dbPort := os.Getenv("DB_PORT")
 	dbName := os.Getenv("DB_NAME")
 
-	// Construct the connection string manually
 	dbConnectionString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", dbUser, dbPassword, dbHost, dbPort, dbName)
 
 	DB, err = sql.Open("postgres", dbConnectionString)
